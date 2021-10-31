@@ -131,6 +131,13 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+
+	tokenString, err := getToken(r)
+	if err == nil {
+		log.Println("-- authHandler: set response header: x-auth-token:%s", tokenString)
+		// w.Header().Set("X-Auth-Token", tokenString)
+		w.Header().Add("X-Auth-Token", tokenString)
+	}
 	encoder := json.NewEncoder(w)
 	encoder.Encode(claims.User)
 }
@@ -160,4 +167,19 @@ func getSession(r *http.Request) (*Claims, error) {
 	}
 
 	return claims, nil
+}
+
+func getToken(r *http.Request) (string, error) {
+	log.Println("-- authHandler - getToken")
+	c, err := r.Cookie("token")
+	switch {
+	case err == http.ErrNoCookie:
+		return "", nil
+	case err != nil:
+		return "", fmt.Errorf("Could not get token cookie. cause %w", err)
+	}
+
+	tokenString := c.Value
+
+	return tokenString, nil
 }

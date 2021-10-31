@@ -17,6 +17,12 @@ services:
     ports:
       - 8080:8080
 
+  sample:
+    build: sample
+    # command: ["--base-path", "/"]
+    ports:
+      - 9001:9001      
+
   whoami:
     image: jwilder/whoami
     ports:

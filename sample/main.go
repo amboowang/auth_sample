@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,10 +31,18 @@ func getHeaders(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, c.Request.Header)
 }
 
+func middleware(c *gin.Context) {
+	log.Printf("header of X-Auth-Token: %s", c.GetHeader("X-Auth-Token"))
+
+	c.Next()
+}
+
 func main() {
 	router := gin.Default()
+	router.Use(middleware)
+
 	router.GET("/albums", getAlbums)
 	router.GET("/", getHeaders)
 
-	router.Run("localhost:9001")
+	router.Run("0.0.0.0:9001")
 }
