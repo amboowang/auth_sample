@@ -13,7 +13,9 @@ services:
 
   auth-server:
     build: auth-server
-    command: ["--base-path", "/users/"]
+    command: ["--base-path", "/"]
+    ports:
+      - 8080:8080
 
   whoami:
     image: jwilder/whoami

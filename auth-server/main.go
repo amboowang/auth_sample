@@ -84,6 +84,7 @@ func loginPOSTHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginGETHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("-- loginGETHandler")
 	claims, err := getSession(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -108,6 +109,7 @@ func loginUser(username string, password string) *UserData {
 }
 
 func logoutPOSTHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("-- logoutPOSTHandler")
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",
 		Path:     "/",
@@ -119,6 +121,7 @@ func logoutPOSTHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func authHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("-- authHandler")
 	claims, err := getSession(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
