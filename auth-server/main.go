@@ -28,6 +28,7 @@ type Claims struct {
 }
 
 var basePath string
+var redirect_uri string
 
 func main() {
 	flag.StringVar(&basePath, "base-path", "/", "indicates the base path where the app is running")
@@ -80,7 +81,8 @@ func loginPOSTHandler(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	http.Redirect(w, r, basePath, http.StatusFound)
+	log.Printf("-- loginPOSTHandler, uri:%s\n", redirect_uri)
+	http.Redirect(w, r, redirect_uri, http.StatusFound)
 }
 
 func loginGETHandler(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +99,10 @@ func loginGETHandler(w http.ResponseWriter, r *http.Request) {
 	case claims != nil:
 		pages.ExecuteTemplate(w, "logout.tmpl", claims)
 	default:
+		if r.FormValue("redirect_uri") != "" {
+			redirect_uri = r.FormValue("redirect_uri")
+		}
+		log.Printf("-- loginGETHandler, uri:%s\n", redirect_uri)
 		pages.ExecuteTemplate(w, "login.tmpl", nil)
 	}
 }
